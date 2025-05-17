@@ -1,6 +1,6 @@
-#include <opencv2/opencv.hpp>
-#include <opencv2/video/tracking.hpp>
-#include <opencv2/core/ocl.hpp>
+#include <opencv/opencv.hpp>
+#include <opencv/tracking.hpp>
+#include <opencv/core/ocl.hpp>
  
 using namespace cv;
 using namespace std;
