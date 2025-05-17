@@ -1,12 +1,10 @@
 #include "wiringPi.h"
-#include <stdio.h>
+#include "i2cp.h"
 
 int main() {
   wiringPiSetupGpio();
-  pinMode(23, OUTPUT);
-  digitalWrite(23, HIGH);
-  printf("HIGH\n");
-  delay(1000);
-  digitalWrite(23, LOW);
-  printf("LOW\n");
+  PCA9685 pca = pca_new("/dev/i2c-1", 0x40);
+  pca_set_pwm_freq(&pca, 50);
+  pca_set_pwm_ms(pca, 0, 2);
+  delay(5000);
 }
