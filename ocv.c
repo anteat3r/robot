@@ -1,5 +1,5 @@
-#include <opencv2/cv.h>
-#include <opencv2/highgui.h>
+#include <opencv/cv.h>
+#include <opencv/highgui.h>
 #include <stdio.h>
 
 int main(int argc, char** argv)
