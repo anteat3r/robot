@@ -24,10 +24,9 @@ int main() {
     exit(1);
   }
 
-
   while (1) {
-    double ms = .5 + (sin((double)micros() / 200000.) + 1.) / 2. * 2.;
-    pca_set_pwm_ms(pca, 0, ms);
+    // double ms = .5 + (sin((double)micros() / 200000.) + 1.) / 2. * 2.;
+    // pca_set_pwm_ms(pca, 0, ms);
 
     // uint16_t angle = as5600_read_angl(&sensor);
     // printf("%d\n", (int)angle);
