@@ -2,64 +2,68 @@
 #include <iostream>
 
 int main(int argc, char** argv) {
-    // Check for proper usage
-    if (argc < 2) {
-        std::cerr << "Usage: " << argv[0] << " <template_image>" << std::endl;
+    // Validate input
+    if (argc != 2) {
+        std::cerr << "Usage: " << argv[0] << " <template_image_path>\n";
         return -1;
     }
 
-    // Load the template image in grayscale
+    // 1. Load template in grayscale
     cv::Mat templ = cv::imread(argv[1], cv::IMREAD_GRAYSCALE);
     if (templ.empty()) {
-        std::cerr << "Error: Could not load template image " << argv[1] << std::endl;
+        std::cerr << "Error: Cannot load template image " << argv[1] << "\n";
         return -1;
-    }
+    }  // 
 
-    // Open the default camera
+    // 2. Open default camera (index 0)
     cv::VideoCapture cap(0);
     if (!cap.isOpened()) {
-        std::cerr << "Error: Could not open camera" << std::endl;
+        std::cerr << "Error: Cannot open camera\n";
         return -1;
-    }
+    }  // 
 
-    // Create a window to display results
-    cv::namedWindow("Template Matching", cv::WINDOW_AUTOSIZE);
+    // 3. Window for display
+    const std::string winName = "Template Matching";
+    cv::namedWindow(winName, cv::WINDOW_AUTOSIZE);
 
+    cv::Mat frame, gray, result;
     while (true) {
-        cv::Mat frame, gray;
-        cap >> frame; // Capture a new frame
+        cap >> frame;                        // Capture a frame :contentReference[oaicite:3]{index=3}
         if (frame.empty()) break;
 
-        // Convert the frame to grayscale
-        cv::cvtColor(frame, gray, cv::COLOR_BGR2GRAY);
+        // Convert to grayscale
+        cv::cvtColor(frame, gray, cv::COLOR_BGR2GRAY);  // 
 
-        // Create the result matrix
+        // Prepare result matrix of correct size
         int result_cols = gray.cols - templ.cols + 1;
         int result_rows = gray.rows - templ.rows + 1;
-        cv::Mat result(result_rows, result_cols, CV_32FC1);
+        result.create(result_rows, result_cols, CV_32FC1);
 
-        // Perform template matching
-        cv::matchTemplate(gray, templ, result, cv::TM_CCOEFF_NORMED);
+        // 4. Template matching
+        cv::matchTemplate(gray, templ, result, cv::TM_CCOEFF_NORMED);  // :contentReference[oaicite:4]{index=4}
 
-        // Localize the best match with minMaxLoc
+        // 5. Find best match location
         double minVal, maxVal;
         cv::Point minLoc, maxLoc;
-        cv::minMaxLoc(result, &minVal, &maxVal, &minLoc, &maxLoc);
+        cv::minMaxLoc(result, &minVal, &maxVal, &minLoc, &maxLoc);   // :contentReference[oaicite:5]{index=5}
 
-        // Define the top-left point of the matching area
-        cv::Point matchLoc = maxLoc;
+        cv::Point matchLoc = maxLoc;  // For TM_CCOEFF_NORMED, maxLoc is best :contentReference[oaicite:6]{index=6}
 
-        // Draw a rectangle around the matched region
-        cv::rectangle(frame, matchLoc, cv::Point(matchLoc.x + templ.cols, matchLoc.y + templ.rows), cv::Scalar(0, 255, 0), 2);
+        // 6. Draw rectangle around the matched region
+        cv::rectangle(
+            frame,
+            matchLoc,
+            cv::Point(matchLoc.x + templ.cols, matchLoc.y + templ.rows),
+            cv::Scalar(0, 255, 0),
+            2
+        );  // :contentReference[oaicite:7]{index=7}
 
-        // Display the result
-        cv::imshow("Template Matching", frame);
-
-        // Exit the loop if the ESC key is pressed
-        if (cv::waitKey(30) == 27) break;
+        // 7. Display
+        cv::imshow(winName, frame);
+        if (cv::waitKey(30) == 27) break;  // Exit on ESC :contentReference[oaicite:8]{index=8}
     }
 
-    // Release resources
+    // Cleanup
     cap.release();
     cv::destroyAllWindows();
     return 0;
