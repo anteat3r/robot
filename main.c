@@ -1,6 +1,7 @@
 #include "wiringPi.h"
 #include "i2cp.h"
 #include <math.h>
+#include <stdio.h>
 
 int main() {
   wiringPiSetupGpio();
@@ -8,7 +9,9 @@ int main() {
   pca_set_pwm_freq(&pca, 50);
 
   while (1) {
-    pca_set_pwm_ms(pca, 0, 1 + (sin((double)micros() / 200000.) + 1.) / 2. * 2.);
+    double ms = 1 + (sin((double)micros() / 200000.) + 1.) / 2. * 2.;
+    pca_set_pwm_ms(pca, 0, ms);
+    printf("%f\n", ms);
     // delay(10);
   }
 }
