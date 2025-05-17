@@ -118,12 +118,12 @@ void mpu6050_write_byte(mpu6050_t *mpu, uint8_t reg, uint8_t val) {
 /* Temperature in °C */
 float mpu6050_get_temp(mpu6050_t *mpu) {
     int16_t raw = mpu6050_read_word(mpu, TEMP_OUT_H);
-    return (raw / 340.0f) + 36.53f;  /* Datasheet formula */ :contentReference[oaicite:13]{index=13}
+    return (raw / 340.0f) + 36.53f;  /* Datasheet formula */ 
 }
 
 /* Accelerometer range setter */
 void mpu6050_set_accel_range(mpu6050_t *mpu, uint8_t range) {
-    mpu6050_write_byte(mpu, ACCEL_CONFIG, range);  /* 0x00 then range */ :contentReference[oaicite:14]{index=14}
+    mpu6050_write_byte(mpu, ACCEL_CONFIG, range);  /* 0x00 then range */ 
 }
 
 /* Read back accel range (raw register) */
@@ -146,7 +146,7 @@ void mpu6050_get_accel(mpu6050_t *mpu, float *ax, float *ay, float *az, int in_g
                 araw == ACCEL_RANGE_8G ? ACCEL_SF_8G :
                 araw == ACCEL_RANGE_16G? ACCEL_SF_16G:
                                          ACCEL_SF_2G);
-    /* Scale to g */                               :contentReference[oaicite:15]{index=15}
+    /* Scale to g */                              
     *ax = rx / sf;  *ay = ry / sf;  *az = rz / sf;
 
     if (!in_g) {
@@ -156,7 +156,7 @@ void mpu6050_get_accel(mpu6050_t *mpu, float *ax, float *ay, float *az, int in_g
 
 /* Gyro range setter */
 void mpu6050_set_gyro_range(mpu6050_t *mpu, uint8_t range) {
-    mpu6050_write_byte(mpu, GYRO_CONFIG, range); :contentReference[oaicite:16]{index=16}
+    mpu6050_write_byte(mpu, GYRO_CONFIG, range); 
 }
 
 /* Read gyro data in °/s */
@@ -166,7 +166,7 @@ void mpu6050_get_gyro(mpu6050_t *mpu, float *gx, float *gy, float *gz) {
     int16_t gz_raw = mpu6050_read_word(mpu, GYRO_ZOUT_H);
 
     uint8_t graw = 0;
-    /* Re-read GYRO_CONFIG register */               :contentReference[oaicite:17]{index=17}
+    /* Re-read GYRO_CONFIG register */               
     mpu6050_write_byte(mpu, MPU_CONFIG, 0); // keep ext_sync, set DLPF=0xff
     // For brevity, assume default ±250°/s
     float sf = GYRO_SF_250;
