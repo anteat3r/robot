@@ -8,7 +8,7 @@ int main() {
   pca_set_pwm_freq(&pca, 50);
 
   while (1) {
-    pca_set_pwm_ms(pca, 0, 2 + (sin((double)micros() / 200000.) + 1.) / 2.);
+    pca_set_pwm_ms(pca, 0, 0 + (sin((double)micros() / 200000.) + 1.) / 2. * 4.);
     // delay(10);
   }
 }
