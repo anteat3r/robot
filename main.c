@@ -11,7 +11,7 @@ int main() {
   while (1) {
     double ms = 1 + (sin((double)micros() / 200000.) + 1.) / 2. * 2.;
     pca_set_pwm_ms(pca, 0, ms);
-    printf("%f\n", ms);
+    printf("%f        \r\n", ms);
     // delay(10);
   }
 }
