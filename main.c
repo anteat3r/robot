@@ -33,7 +33,7 @@ int main() {
     // printf("%d\n", (int)angle);
 
     float ax, ay, az;
-    mpu6050_get_accel(&accels, &ax, &ay, &az, 0);
+    mpu6050_get_gyro(&accels, &ax, &ay, &az);
     printf("%f %f %f\n", ax, ay, az);
   }
 }
