@@ -101,12 +101,13 @@ void pca_set_pwm_freq(PCA9685* pca, const double freq_hz) {
   prescaleval /= freq_hz;
   prescaleval -= 1.0;
 
+  prescaleval = 121;
+
   int prescale = (int)round(prescaleval);
 
   uint8_t oldmode = I2CP_read_register_data(pca->i2CP_bus_fd, MODE1);
 
   uint8_t newmode = (oldmode & 0x7F) | SLEEP;
-
 
   I2CP_write_register_data(pca->i2CP_bus_fd, MODE1, newmode);
   I2CP_write_register_data(pca->i2CP_bus_fd, PRESCALE, prescale);
