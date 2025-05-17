@@ -1,59 +1,111 @@
 #include <opencv2/opencv.hpp>
-#include <opencv2/video/tracking.hpp>
-#include <opencv2/highgui.hpp>
-#include <iostream>
-
-int main() {
-    // 1. Open video capture (camera or file)
-    cv::VideoCapture cap(0);
-    if (!cap.isOpened()) {
-        std::cerr << "Error: cannot open camera\n";
-        return -1;
-    }  // :contentReference[oaicite:4]{index=4}
-
-    // 2. Read first frame and select ROI
-    cv::Mat frame;
-    cap >> frame;
-    if (frame.empty()) {
-        std::cerr << "Error: blank frame grabbed\n";
-        return -1;
+#include <opencv2/tracking.hpp>
+#include <opencv2/core/ocl.hpp>
+ 
+using namespace cv;
+using namespace std;
+ 
+// Convert to string
+#define SSTR( x ) static_cast< std::ostringstream & >( \
+( std::ostringstream() << std::dec << x ) ).str()
+ 
+int main(int argc, char **argv)
+{
+    // List of tracker types in OpenCV 3.4.1
+    string trackerTypes[8] = {"BOOSTING", "MIL", "KCF", "TLD","MEDIANFLOW", "GOTURN", "MOSSE", "CSRT"};
+    // vector <string> trackerTypes(types, std::end(types));
+ 
+    // Create a tracker
+    string trackerType = trackerTypes[2];
+ 
+    Ptr<Tracker> tracker;
+ 
+    #if (CV_MINOR_VERSION < 3)
+    {
+        tracker = Tracker::create(trackerType);
     }
-
-    // Let user select the object to track
-    cv::Rect2d roi = cv::selectROI("Select Object", frame, false, false);
-    if (roi.width == 0 || roi.height == 0) {
-        std::cerr << "Error: no ROI selected\n";
-        return -1;
-    }  // :contentReference[oaicite:5]{index=5}
-
-    // 3. Create CSRT tracker and initialize
-    cv::Ptr<cv::Tracker> tracker = cv::TrackerCSRT::create();
-    tracker->init(frame, roi);  // :contentReference[oaicite:6]{index=6}
-
-    // 4. Tracking loop
-    while (true) {
-        cap >> frame;
-        if (frame.empty()) break;
-
-        // Update tracker and get new bounding box
-        bool ok = tracker->update(frame, roi);
-        if (ok) {
-            // Draw tracked box
-            cv::rectangle(frame, roi, cv::Scalar(0, 255, 0), 2, 1);
-        } else {
-            // Tracking failure
-            cv::putText(frame, "Tracking failure", {50, 80},
-                        cv::FONT_HERSHEY_SIMPLEX, 0.75, {0, 0, 255}, 2);
-        }  // :contentReference[oaicite:7]{index=7}
-
-        // Display FPS and instructions
-        cv::putText(frame, "CSRT Tracker", {20, 20},
-                    cv::FONT_HERSHEY_SIMPLEX, 0.75, {255, 255, 255}, 2);
-        cv::imshow("Tracking", frame);
-
-        // Exit on ESC
-        if (cv::waitKey(30) == 27) break;  // :contentReference[oaicite:8]{index=8}
+    #else
+    {
+        if (trackerType == "BOOSTING")
+            tracker = TrackerBoosting::create();
+        if (trackerType == "MIL")
+            tracker = TrackerMIL::create();
+        if (trackerType == "KCF")
+            tracker = TrackerKCF::create();
+        if (trackerType == "TLD")
+            tracker = TrackerTLD::create();
+        if (trackerType == "MEDIANFLOW")
+            tracker = TrackerMedianFlow::create();
+        if (trackerType == "GOTURN")
+            tracker = TrackerGOTURN::create();
+        if (trackerType == "MOSSE")
+            tracker = TrackerMOSSE::create();
+        if (trackerType == "CSRT")
+            tracker = TrackerCSRT::create();
     }
-
-    return 0;
+    #endif
+    // Read video
+    VideoCapture video("videos/chaplin.mp4");
+     
+    // Exit if video is not opened
+    if(!video.isOpened())
+    {
+        cout << "Could not read video file" << endl; 
+        return 1; 
+    } 
+ 
+    // Read first frame 
+    Mat frame; 
+    bool ok = video.read(frame); 
+ 
+    // Define initial bounding box 
+    Rect2d bbox(287, 23, 86, 320); 
+ 
+    // Uncomment the line below to select a different bounding box 
+    // bbox = selectROI(frame, false); 
+    // Display bounding box. 
+    rectangle(frame, bbox, Scalar( 255, 0, 0 ), 2, 1 ); 
+ 
+    imshow("Tracking", frame); 
+    tracker->init(frame, bbox);
+     
+    while(video.read(frame))
+    {     
+        // Start timer
+        double timer = (double)getTickCount();
+         
+        // Update the tracking result
+        bool ok = tracker->update(frame, bbox);
+         
+        // Calculate Frames per second (FPS)
+        float fps = getTickFrequency() / ((double)getTickCount() - timer);
+         
+        if (ok)
+        {
+            // Tracking success : Draw the tracked object
+            rectangle(frame, bbox, Scalar( 255, 0, 0 ), 2, 1 );
+        }
+        else
+        {
+            // Tracking failure detected.
+            putText(frame, "Tracking failure detected", Point(100,80), FONT_HERSHEY_SIMPLEX, 0.75, Scalar(0,0,255),2);
+        }
+         
+        // Display tracker type on frame
+        putText(frame, trackerType + " Tracker", Point(100,20), FONT_HERSHEY_SIMPLEX, 0.75, Scalar(50,170,50),2);
+         
+        // Display FPS on frame
+        putText(frame, "FPS : " + SSTR(int(fps)), Point(100,50), FONT_HERSHEY_SIMPLEX, 0.75, Scalar(50,170,50), 2);
+ 
+        // Display frame.
+        imshow("Tracking", frame);
+         
+        // Exit if ESC pressed.
+        int k = waitKey(1);
+        if(k == 27)
+        {
+            break;
+        }
+ 
+    }
 }
