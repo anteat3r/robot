@@ -8,7 +8,7 @@ int main() {
   while (1) {
     pca_set_pwm_ms(pca, 0, 2);
     delay(500);
-    pca_set_pwm_ms(pca, 0, 0);
+    pca_set_pwm_ms(pca, 0, 1);
     delay(500);
   }
 }
