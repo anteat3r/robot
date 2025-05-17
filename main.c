@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "mpu6050.h"
 
 int main() {
   wiringPiSetupGpio();
@@ -17,12 +18,22 @@ int main() {
     exit(1);
   }
 
+  mpu6050_t accels;
+  if (mpu6050_init("/dev/i2c-1", &accels) != 0) {
+    perror("mpu6050 init");
+    exit(1);
+  }
+
 
   while (1) {
     double ms = .5 + (sin((double)micros() / 200000.) + 1.) / 2. * 2.;
     pca_set_pwm_ms(pca, 0, ms);
 
-    uint16_t angle = as5600_read_angl(&sensor);
-    printf("%d\n", (int)angle);
+    // uint16_t angle = as5600_read_angl(&sensor);
+    // printf("%d\n", (int)angle);
+
+    float ax, ay, az;
+    mpu6050_get_accel(&accels, &ax, &ay, &az, 0);
+    printf("%f %f %f\n", ax, ay, az);
   }
 }
