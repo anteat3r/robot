@@ -7,7 +7,7 @@
 int main() {
   wiringPiSetupGpio();
   PCA9685 pca = pca_new("/dev/i2c-1", 0x40);
-  pca_set_pwm_freq(&pca, 50);
+  pca_set_pwm_freq(&pca, 20);
 
   // as5600_t sensor;
   // if (as5600_init("/dev/i2c-1", &sensor) != 0) {
