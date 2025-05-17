@@ -113,7 +113,8 @@ int main(void) {
     InitWindow(WIDTH, HEIGHT, "V4L2 Camera → Raylib");     // :contentReference[oaicite:8]{index=8}
     SetTargetFPS(60);                                       // :contentReference[oaicite:9]{index=9}
     // Texture2D camTex = LoadTextureFromImage(Image);         // placeholder
-    Texture2D camTex = LoadTextureFromImage(GenImageColor(WIDTH, HEIGHT, RED));
+    Image img = GenImageColor(WIDTH, HEIGHT, RED);
+    Texture2D camTex = LoadTextureFromImage(img);
 
     // Allocate CPU buffer for RGB data
     unsigned char *rgbBuffer = malloc(WIDTH * HEIGHT * 3);
