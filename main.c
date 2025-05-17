@@ -2,7 +2,7 @@
 
 int main() {
   wiringPiSetupGpio();
-  digitalWrite(2, HIGH);
+  digitalWrite(23, HIGH);
   delay(1000);
-  digitalWrite(2, LOW);
+  digitalWrite(23, LOW);
 }
