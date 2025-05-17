@@ -22,7 +22,7 @@ int main() {
   // }
 
   while (1) {
-    pca_set_pwm_ms(pca, 0, 500);
+    pca_set_pwm_ms(pca, 0, 10);
 
     // uint16_t angle = as5600_read_angl(&sensor);
     // printf("%d\n", (int)angle);
