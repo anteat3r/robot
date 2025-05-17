@@ -3,6 +3,7 @@
 
 int main() {
   wiringPiSetupGpio();
+  pinMode(23, OUTPUT);
   digitalWrite(23, HIGH);
   printf("HIGH\n");
   delay(1000);
