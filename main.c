@@ -5,6 +5,10 @@ int main() {
   wiringPiSetupGpio();
   PCA9685 pca = pca_new("/dev/i2c-1", 0x40);
   pca_set_pwm_freq(&pca, 50);
-  pca_set_pwm_ms(pca, 0, 2);
-  delay(5000);
+  while (1) {
+    pca_set_pwm_ms(pca, 0, 2);
+    delay(500);
+    pca_set_pwm_ms(pca, 0, 1);
+    delay(500);
+  }
 }
