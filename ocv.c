@@ -112,7 +112,8 @@ int main(void) {
     // 7. Raylib initialization
     InitWindow(WIDTH, HEIGHT, "V4L2 Camera → Raylib");     // :contentReference[oaicite:8]{index=8}
     SetTargetFPS(60);                                       // :contentReference[oaicite:9]{index=9}
-    Texture2D camTex = LoadTextureFromImage(Image);         // placeholder
+    // Texture2D camTex = LoadTextureFromImage(Image);         // placeholder
+    Texture2D camTex;
 
     // Allocate CPU buffer for RGB data
     unsigned char *rgbBuffer = malloc(WIDTH * HEIGHT * 3);
@@ -121,7 +122,7 @@ int main(void) {
     camTex.width  = WIDTH;
     camTex.height = HEIGHT;
     camTex.mipmaps = 1;
-    camTex.format = UNCOMPRESSED_R8G8B8;                   // Raylib enum for RGB
+    camTex.format = PIXELFORMAT_UNCOMPRESSED_R8G8B8;                   // Raylib enum for RGB
     UpdateTexture(camTex, rgbBuffer);                       // dummy to init GPU texture :contentReference[oaicite:10]{index=10}
 
     // 8. Main loop
